@@ -3,6 +3,7 @@ import 'List.dart';
 import 'openingSheet.dart';
 import 'package:provider/provider.dart';
 import 'task_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(Z0());
 
@@ -21,14 +22,20 @@ class Z0 extends StatelessWidget {
   }
 }
 
-class Z1 extends StatefulWidget {
-  @override
-  _Z1State createState() => _Z1State();
-}
+class Z1 extends StatelessWidget {
 
-class _Z1State extends State<Z1> {
+  void getData(BuildContext context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    Provider.of<Data>(context, listen: false).taskName =
+        prefs.getStringList('tasksName') ?? [];
+    Provider.of<Data>(context, listen: false).taskIsDone =
+        prefs.getStringList('tasksIsDone') ?? [];
+    Provider.of<Data>(context, listen: false).notify();
+  }
+
   @override
   Widget build(BuildContext context) {
+    getData(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         tooltip: 'add new task',
@@ -40,7 +47,8 @@ class _Z1State extends State<Z1> {
         onPressed: () {
           showModalBottomSheet<void>(
             context: context,
-            builder: (context) => OpenSheet(),backgroundColor: Colors.transparent,
+            builder: (context) => OpenSheet(),
+            backgroundColor: Colors.transparent,
           );
         },
       ),
@@ -76,9 +84,9 @@ class _Z1State extends State<Z1> {
                     ),
                   ),
                   Text(
-                    '${Provider.of<Data>(context).tasks.length} ${Provider.of<Data>(context).tasks.length > 1 ? 'Tasks' : 'Task'}',
+                    '${Provider.of<Data>(context).taskName.length} ${Provider.of<Data>(context).taskName.length > 1 ? 'Tasks' : 'Task'}',
                     style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
+                  )
                 ],
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'task_data.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OpenSheet extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class _OpenSheetState extends State<OpenSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
@@ -20,33 +21,31 @@ class _OpenSheetState extends State<OpenSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(
-            'Add Task',
-            style: TextStyle(
-              color: Colors.lightBlueAccent,
-              fontWeight: FontWeight.w700,
-              fontSize: 30.0,
-            ),
-            textAlign: TextAlign.center,
-          ),
           TextField(
             autofocus: true,
             textAlign: TextAlign.center,
-            onChanged: (String val){
+            onChanged: (String val) {
               taskName = val;
             },
           ),
           FlatButton(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
             color: Colors.lightBlueAccent,
             child: Text(
               'Add',
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              if(taskName != '')
-                Provider.of<Data>(context).add(taskName);
+              if (taskName != '')
+                Provider.of<Data>(context, listen: false).add(taskName);
               else
-                print('The task you add is empty!');
+                Fluttertoast.showToast(
+                  msg: 'Task is empty!',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  fontSize: 16.0,
+                );
               Navigator.pop(context);
             },
           )
